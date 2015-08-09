@@ -1,6 +1,5 @@
 #include <iostream>
 
-
 struct VTDate {
 	int hour;
 	int minute;

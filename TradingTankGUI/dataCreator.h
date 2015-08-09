@@ -418,6 +418,7 @@ namespace TradingTankGUI {
 			this->mousePanel->Name = L"mousePanel";
 			this->mousePanel->Size = System::Drawing::Size(614, 381);
 			this->mousePanel->TabIndex = 2;
+			this->mousePanel->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &dataCreator::mousePanel_MouseClick);
 			// 
 			// dataMakerProgressBar
 			// 
@@ -462,10 +463,6 @@ namespace TradingTankGUI {
 
 		}
 #pragma endregion
-private: System::Void mousePanel_Click(System::Object^  sender, System::EventArgs^  e) {
-	startOrStop(this->mousePanel->Location.X, this->mousePanel->Location.Y);	// This call will go to a function in the dataCreator.cpp file
-					// Which will be used to connect to outside functions.
-}
 private: System::Void dataCreator_MouseMove(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
 	mouseMoved(e->Location.X, e->Location.Y);
 }
@@ -477,6 +474,10 @@ private: System::Void timer1_Tick(System::Object^  sender, System::EventArgs^  e
 	// the max VT and produce a % of complete simulation.
 	this->dataMakerProgressBar->Value = updateProgressBar();
 	this->dataMakerProgressBar->Refresh();
+}
+private: System::Void mousePanel_MouseClick(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+	startOrStop(this->mousePanel->Location.X, this->mousePanel->Location.Y);	// This call will go to a function in the dataCreator.cpp file
+	// Which will be used to connect to outside functions.
 }
 };
 }

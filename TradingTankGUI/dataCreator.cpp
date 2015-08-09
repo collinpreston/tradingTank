@@ -18,3 +18,15 @@ void mouseMoved(short int mouseX, short int mouseY) {
 int updateProgressBar() {
 	return getPercentageComplete();
 }
+using namespace System;
+using namespace System::Windows::Forms;
+
+[STAThread]
+void Main(array<String^>^ args)
+{
+	Application::EnableVisualStyles();
+	Application::SetCompatibleTextRenderingDefault(false);
+
+	TradingTankGUI::dataCreator form;
+	Application::Run(%form);
+}

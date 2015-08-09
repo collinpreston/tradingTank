@@ -57,11 +57,11 @@ void startRecording(short int panelX, short int panelY) {
 	POINT p;
 	GetCursorPos(&p);
 	ScreenToClient(GetActiveWindow(), &p);
+	isRecording = true;
 	updateMousePos(p.x, p.y);
 	panelXLoc = panelX;
 	panelYLoc = panelY;
 
-	isRecording = true;
 	globalThreadStop = true;
 	VTBasicThread();
 
