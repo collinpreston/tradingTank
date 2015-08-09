@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="TradingTankGUI::dataCreator" Collapsed="true">
+    <Position X="3.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>RYTDomCgACAAAZAQAECCgBAiQAAEIAgAglACGCiBQEA=</HashCode>
+      <FileName>dataCreator.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TradingTankGUI::HelpPopUp" Collapsed="true">
+    <Position X="5.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAASAAAAAAJEAAACAAAACAABAABAAAEAAAAAQAAA=</HashCode>
+      <FileName>HelpPopUp.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TradingTankGUI::MyForm" Collapsed="true">
+    <Position X="7" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>/Y2ASG3QglKAApgBjCSANAIGBAJBIOoQQuAQkkEJBgI=</HashCode>
+      <FileName>MyForm.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TradingTankGUI::portfolioManagement" Collapsed="true">
+    <Position X="3.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQAACAAAACAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>portfolioManagement.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VTime" Collapsed="true">
+    <Position X="5.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAiAAAAAAAAAkCAQAABAAAAAEA=</HashCode>
+      <FileName>Source.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="VTDate" Collapsed="true">
+    <Position X="5.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAQAAAAAAAAAAAAAiAIAAAAA=</HashCode>
+      <FileName>Source.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="trade" Collapsed="true">
+    <Position X="3.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>Source.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

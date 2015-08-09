@@ -1,10 +1,12 @@
 #include <iostream>
-double calcCleanCost(short int);
-double calcCleanVol(short int);
-void dataPublisher(double, double);
-bool isRecording = false;
-short int panelXLoc;
-short int panelYLoc;
-void startRecording(short int, short int);
-void updateMousePos(short int, short int);
-void stopRecording();
+extern double calcCleanCost(short int);
+extern double calcCleanVol(short int);
+extern void dataPublisher(double, double);
+extern bool isRecording;
+extern short int panelXLoc;
+extern short int panelYLoc;
+extern short int lastMouseLocX;
+extern short int lastMouseLocY;
+extern void startRecording(short int, short int);
+extern void updateMousePos(short int, short int);
+extern void stopRecording();

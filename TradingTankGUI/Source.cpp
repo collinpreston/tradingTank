@@ -6,25 +6,25 @@
 #include <string>
 using namespace std;
 
+VTime myTime;
 unsigned int __stdcall VTBasicThread()
 {
-	VTime myTime;
+	//VTime myTime;
 	// Begin the clock
+	
 	myTime.startVT();
-	do {
-		// This function will also update the progress bar
-		// and will call stopRecording once the max time is reached.
+	while (globalThreadStop) {		// Will exit if the user clicks stop.
+		do {
+			dataPublisher(calcCleanVol(lastMouseLocX), calcCleanCost(lastMouseLocY));
+			
+			
+			// This function will also update the progress bar
 
-
-		// This should check to see if the mouse has been moved.
-		// If the mouse has not been moved since the last tick
-		// then this function should use the last output again.
-		// I should create a function - getLastOutput
-
-		// This while loop should contain a function to check the
-		// system clock and keep track of the real time in order to
-		// delay VT correctly.
-	} while (myTime.clockTick());
+			// This while loop should contain a function to check the
+			// system clock and keep track of the actual time in order to
+			// delay VT correctly.
+		} while (myTime.clockTick());	// Will exit once the max time is reached.
+	}
 	stopRecording();
 	// At this point, the thread should end
 	return 0;
@@ -95,14 +95,14 @@ void VTime::startVT()
 	// Code here will start VT
 	// initialize to config file specs
 	ifstream VTConfig;
-	VTConfig.open("Config\VT.txt");
+	VTConfig.open("Config\\VT.txt");
 	string hour;
 	string minute;
 	string second;
 	string msec;
 	short int line = 0;
 	if (VTConfig) {
-		while (!VTConfig.eof) {
+		while (!VTConfig.eof()) {
 			getline(VTConfig, hour, ':');
 			getline(VTConfig, minute, ':');
 			getline(VTConfig, second, ':');
@@ -135,9 +135,7 @@ void VTime::startVT()
 	VTConfig.close();
 	return;
 }
-void VTime::stopVT() {
 
-}
 bool VTime::clockTick()
 {
 	// Code here will advance the current
@@ -161,4 +159,27 @@ bool VTime::clockTick()
 }
 VTDate getCurrentTime() {
 	return myTime.currentTime;
+}
+VTDate getStartTime() {
+	return myTime.startTime;
+}
+VTDate getMaxTime() {
+	return myTime.maxTime;
+}
+int getPercentageComplete() {
+	double sumA, sumB;
+
+	// Convert all of the different time measurements to msec
+	// for both the current and max time in respect to the starting time
+	sumA = (myTime.currentTime.hour - myTime.startTime.hour) * 3600000;
+	sumA += (myTime.currentTime.minute - myTime.startTime.minute) * 60000;
+	sumA += (myTime.currentTime.second - myTime.startTime.second) * 1000;
+	sumA += (myTime.currentTime.msec = myTime.startTime.msec);
+
+	sumB = (myTime.maxTime.hour - myTime.startTime.hour) * 3600000;
+	sumB += (myTime.maxTime.minute - myTime.startTime.minute) * 60000;
+	sumB += (myTime.maxTime.second - myTime.startTime.second) * 1000;
+	sumB += (myTime.maxTime.msec - myTime.startTime.msec);
+
+	return (int)((sumA / sumB) * 100);
 }

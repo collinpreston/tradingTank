@@ -7,32 +7,43 @@
 using namespace std;
 
 // When ever the cursor is moved and recording is in process this is called
+// This function takes the mouse location and uses
+// the Y coordinate to determine the cost output.
+// NOTE: this function will calculate the cost based
+// only on the mouse position.
+volatile bool globalThreadStop = false;
+bool isRecording = false;
+short int panelXLoc;
+short int panelYLoc;
+short int lastMouseLocX;
+short int lastMouseLocY;
 double calcCleanCost(short int mouseCost) {
-	// This function takes the mouse location and uses
-	// the Y coordinate to determine the cost output.
-	// NOTE: this function will calculate the cost based
-	// only on the mouse position.
-
 	return (double)(mouseCost - 89) / 2.92;
 }
+
+// This function takes the mouse location and uses
+// the X coordinate to determine the volume output.
+// NOTE: this function will calculate the volume based
+// only on the mouse position.
 double calcCleanVol(short int mouseVol) {
-	// This function takes the mouse location and uses
-	// the X coordinate to determine the volume output.
-	// NOTE: this function will calculate the volume based
-	// only on the mouse position.
+
 
 	// EDIT: This should later be changed so it is not
 	// hard coded.
 	return (double)(mouseVol - 174) / 4.4;
 }
+
+// This function should be overloaded at some point
+// in order to handle different combinations of data output.
 void dataPublisher(double volumeOutput, double costOutput) {
-	// This function should be overloaded at some point
-	// in order to handle different combinations of data output.
 	ofstream dataCollector;
 	dataCollector.open("data_output.txt");
 	dataCollector << getCurrentTime().hour << ":" << getCurrentTime().minute << ":"
 		<< getCurrentTime().second << ":" << getCurrentTime().msec << " " << "SYMB"
 		<< " " << volumeOutput << " " << costOutput << " " << "B/S";
+
+	// This should set some global variable to the variable that are the latest output
+	// ie. above. 
 }
 void startRecording(short int panelX, short int panelY) {
 	// This should start the VT ticker.
@@ -51,6 +62,7 @@ void startRecording(short int panelX, short int panelY) {
 	panelYLoc = panelY;
 
 	isRecording = true;
+	globalThreadStop = true;
 	VTBasicThread();
 
 
@@ -60,9 +72,13 @@ void stopRecording() {
 	// being used for writing data.
 	// I should wait to program this until I have created all of the data
 	// writer code/functions.
+	globalThreadStop = false;
 	isRecording = false;
-	myTime.stopVT();
+	return;
 }
+// This function will need to changed so that it just sets a flag.
+// I don't want data every time that the mouse is moved.
+// Instead I want for the VT to "clock-in" the mouse position at each tick
 void updateMousePos(short int mouseX, short int mouseY) {
 	// Will need to check to be sure that the cursor is in the panel and not just the window.
 	// If this is true, then run a calc function to derive the cost and volume associated with the position
@@ -73,10 +89,8 @@ void updateMousePos(short int mouseX, short int mouseY) {
 		if (mouseX > panelXLoc && mouseX < panelXLoc + 614 &&
 			mouseY > panelYLoc && mouseY < panelYLoc + 381) {
 
-			// This should calculate the cost and then send the result
-			// to another data publishing function.  This log publishing
-			// function should be in the data maker engine.
-			dataPublisher(calcCleanVol(mouseX), calcCleanCost(mouseY));
+			lastMouseLocX = mouseX;
+			lastMouseLocY = mouseY;
 			return;
 		}
 	}

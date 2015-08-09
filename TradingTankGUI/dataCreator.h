@@ -1,6 +1,8 @@
 #pragma once
 
-
+extern void startOrStop(short int panelX, short int panelY);
+extern void mouseMoved(short int mouseX, short int mouseY);
+extern int updateProgressBar();
 namespace TradingTankGUI {
 
 	using namespace System;
@@ -78,6 +80,8 @@ namespace TradingTankGUI {
 	private: System::Windows::Forms::Panel^  mousePanel;
 	private: System::Windows::Forms::ProgressBar^  dataMakerProgressBar;
 	private: System::Windows::Forms::Label^  label1;
+	private: System::Windows::Forms::Timer^  timer1;
+	private: System::ComponentModel::IContainer^  components;
 
 
 
@@ -86,7 +90,7 @@ namespace TradingTankGUI {
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		System::ComponentModel::Container ^components;
+
 
 		// Used to check whether VT is running or stopped.
 		// This will be used to start and stop recording makerPad and outputting data files
@@ -98,6 +102,7 @@ namespace TradingTankGUI {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->components = (gcnew System::ComponentModel::Container());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->fileToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->newCollectionToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -138,6 +143,7 @@ namespace TradingTankGUI {
 			this->mousePanel = (gcnew System::Windows::Forms::Panel());
 			this->dataMakerProgressBar = (gcnew System::Windows::Forms::ProgressBar());
 			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -418,6 +424,8 @@ namespace TradingTankGUI {
 			this->dataMakerProgressBar->Location = System::Drawing::Point(600, 59);
 			this->dataMakerProgressBar->Name = L"dataMakerProgressBar";
 			this->dataMakerProgressBar->Size = System::Drawing::Size(188, 24);
+			this->dataMakerProgressBar->Step = 1;
+			this->dataMakerProgressBar->Style = System::Windows::Forms::ProgressBarStyle::Continuous;
 			this->dataMakerProgressBar->TabIndex = 3;
 			// 
 			// label1
@@ -428,6 +436,10 @@ namespace TradingTankGUI {
 			this->label1->Size = System::Drawing::Size(71, 13);
 			this->label1->TabIndex = 4;
 			this->label1->Text = L"Time Elapsed";
+			// 
+			// timer1
+			// 
+			this->timer1->Tick += gcnew System::EventHandler(this, &dataCreator::timer1_Tick);
 			// 
 			// dataCreator
 			// 
@@ -454,10 +466,17 @@ private: System::Void mousePanel_Click(System::Object^  sender, System::EventArg
 	startOrStop(this->mousePanel->Location.X, this->mousePanel->Location.Y);	// This call will go to a function in the dataCreator.cpp file
 					// Which will be used to connect to outside functions.
 }
-private: System::Void dataCreator_MouseMove(System::Object^  sender, System::Windows::Forms::MouseEventArgs  e) {
-	mouseMoved(this->mousePanel->Location.X, this->mousePanel->Location.Y, e.Location.X, e.Location.Y);
+private: System::Void dataCreator_MouseMove(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
+	mouseMoved(e->Location.X, e->Location.Y);
 }
 private: System::Void dataCreator_Load(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void timer1_Tick(System::Object^  sender, System::EventArgs^  e) {
+	// This will be used to update the progress bar.
+	// Every second it will check the current VT and compare it with
+	// the max VT and produce a % of complete simulation.
+	this->dataMakerProgressBar->Value = updateProgressBar();
+	this->dataMakerProgressBar->Refresh();
 }
 };
 }

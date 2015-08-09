@@ -441,6 +441,7 @@ private: System::Windows::Forms::GroupBox^  monitorBox;
 			this->simulationToolBar->Size = System::Drawing::Size(1507, 25);
 			this->simulationToolBar->TabIndex = 1;
 			this->simulationToolBar->Text = L"toolStrip1";
+			this->simulationToolBar->ItemClicked += gcnew System::Windows::Forms::ToolStripItemClickedEventHandler(this, &MyForm::simulationToolBar_ItemClicked);
 			// 
 			// simStartBtn
 			// 
@@ -991,6 +992,8 @@ private: System::Void bidPriceTxtBox_TextChanged(System::Object^  sender, System
 private: System::Void askPriceTxtBox_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 }
 private: System::Void tabPage2_Click(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void simulationToolBar_ItemClicked(System::Object^  sender, System::Windows::Forms::ToolStripItemClickedEventArgs^  e) {
 }
 };
 }
