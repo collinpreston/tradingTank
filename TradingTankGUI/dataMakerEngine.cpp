@@ -37,13 +37,14 @@ double calcCleanVol(short int mouseVol) {
 // in order to handle different combinations of data output.
 void dataPublisher(double volumeOutput, double costOutput) {
 	ofstream dataCollector;
-	dataCollector.open("data_output.txt");
+	dataCollector.open("data_output.txt", ios::app);
 	dataCollector << getCurrentTime().hour << ":" << getCurrentTime().minute << ":"
 		<< getCurrentTime().second << ":" << getCurrentTime().msec << " " << "SYMB"
-		<< " " << volumeOutput << " " << costOutput << " " << "B/S";
+		<< " " << volumeOutput << " " << costOutput << " " << "B/S" << endl;
 
 	// This should set some global variable to the variable that are the latest output
 	// ie. above. 
+	dataCollector.close();
 }
 void startRecording(short int panelX, short int panelY) {
 	// This should start the VT ticker.
@@ -72,7 +73,6 @@ void stopRecording() {
 	// being used for writing data.
 	// I should wait to program this until I have created all of the data
 	// writer code/functions.
-	globalThreadStop = false;
 	isRecording = false;
 	return;
 }

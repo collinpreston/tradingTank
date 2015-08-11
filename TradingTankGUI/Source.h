@@ -36,6 +36,7 @@ extern int getPercentageComplete();
 extern VTDate getMaxTime();
 extern VTDate getStartTime();
 extern volatile bool globalThreadStop;
+extern int convertTimeToMSec(VTDate time);
 
 
 /*

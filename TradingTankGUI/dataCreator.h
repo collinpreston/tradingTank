@@ -476,8 +476,10 @@ private: System::Void timer1_Tick(System::Object^  sender, System::EventArgs^  e
 	this->dataMakerProgressBar->Refresh();
 }
 private: System::Void mousePanel_MouseClick(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
-	startOrStop(this->mousePanel->Location.X, this->mousePanel->Location.Y);	// This call will go to a function in the dataCreator.cpp file
+	// This call will go to a function in the dataCreator.cpp file
 	// Which will be used to connect to outside functions.
+	this->timer1->Start();
+	startOrStop(this->mousePanel->Location.X, this->mousePanel->Location.Y);
 }
 };
 }

@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <vector>
 using namespace std;
 
 VTime myTime;
@@ -13,17 +14,17 @@ unsigned int __stdcall VTBasicThread()
 	// Begin the clock
 	
 	myTime.startVT();
+	myTime.currentTime = myTime.startTime;
 	while (globalThreadStop) {		// Will exit if the user clicks stop.
-		do {
-			dataPublisher(calcCleanVol(lastMouseLocX), calcCleanCost(lastMouseLocY));
+		dataPublisher(calcCleanVol(lastMouseLocX), calcCleanCost(lastMouseLocY));
 			
 			
-			// This function will also update the progress bar
+		// This function still needs some sort of delay
 
-			// This while loop should contain a function to check the
-			// system clock and keep track of the actual time in order to
-			// delay VT correctly.
-		} while (myTime.clockTick());	// Will exit once the max time is reached.
+		// This while loop should contain a function to check the
+		// system clock and keep track of the actual time in order to
+		// delay VT correctly.
+		myTime.clockTick();	// Will exit once the max time is reached.
 	}
 	stopRecording();
 	// At this point, the thread should end
@@ -44,7 +45,7 @@ VTime::VTime(int initHour, int initMinute, int initSecond, int initMsec)
 	startTime.msec = initMsec;
 }
 bool VTDate::operator>(const VTDate &a) const {
-	if (this->hour > a.hour && this->minute > a.minute && this->second > a.second && this->msec > a.msec) {
+	if (convertTimeToMSec(*this) > convertTimeToMSec(a)) {
 		return true;
 	}
 	else {
@@ -52,7 +53,7 @@ bool VTDate::operator>(const VTDate &a) const {
 	}
 }
 bool VTDate::operator<(const VTDate &a) const {
-	if (this->hour < a.hour && this->minute < a.minute && this->second < a.second && this->msec < a.msec) {
+	if (convertTimeToMSec(*this) < convertTimeToMSec(a)) {
 		return true;
 	}
 	else {
@@ -60,7 +61,7 @@ bool VTDate::operator<(const VTDate &a) const {
 	}
 }
 bool VTDate::operator==(const VTDate &a) const {
-	if (this->hour == a.hour && this->minute == a.minute && this->second == a.second && this->msec == a.msec) {
+	if (convertTimeToMSec(*this) == convertTimeToMSec(a)) {
 		return true;
 	}
 	else {
@@ -68,7 +69,10 @@ bool VTDate::operator==(const VTDate &a) const {
 	}
 }
 bool VTDate::operator<=(const VTDate &a) const {
-	if (this->hour <= a.hour && this->minute <= a.minute && this->second <= a.second && this->msec <= a.msec) {
+	int b, c;
+	b = convertTimeToMSec(*this);
+	c = convertTimeToMSec(a);
+	if (convertTimeToMSec(*this) <= convertTimeToMSec(a)) {
 		return true;
 	}
 	else {
@@ -76,7 +80,7 @@ bool VTDate::operator<=(const VTDate &a) const {
 	}
 }
 bool VTDate::operator>=(const VTDate &a) const {
-	if (this->hour >= a.hour && this->minute >= a.minute && this->second >= a.second && this->msec >= a.msec) {
+	if (convertTimeToMSec(*this) >= convertTimeToMSec(a)) {
 		return true;
 	}
 	else {
@@ -94,44 +98,52 @@ void VTime::startVT()
 {
 	// Code here will start VT
 	// initialize to config file specs
-	ifstream VTConfig;
-	VTConfig.open("Config\\VT.txt");
-	string hour;
-	string minute;
-	string second;
-	string msec;
-	short int line = 0;
-	if (VTConfig) {
-		while (!VTConfig.eof()) {
-			getline(VTConfig, hour, ':');
-			getline(VTConfig, minute, ':');
-			getline(VTConfig, second, ':');
-			getline(VTConfig, msec, ':');
-			if (line == 0) {
-				this->startTime.hour = stoi(hour);
-				this->startTime.minute = stoi(minute);
-				this->startTime.second = stoi(second);
-				this->startTime.msec = stoi(msec);
-			}
-			if (line == 1) {
-				this->tickPrecision.hour = stoi(hour);
-				this->tickPrecision.minute = stoi(minute);
-				this->tickPrecision.second = stoi(second);
-				this->tickPrecision.msec = stoi(msec);
-			}
-			if (line == 2) {
-				this->maxTime.hour = stoi(hour);
-				this->maxTime.minute = stoi(minute);
-				this->maxTime.second = stoi(second);
-				this->maxTime.msec = stoi(msec);
-			}
-			line++;
+	ifstream VTConfig("Config\\VT.txt");
+
+	int number;
+	char delimiter;
+	int start[4] = { 0 };
+	int tick[4] = { 0 };
+	int max[4] = { 0 };
+	string Line;
+	while (!VTConfig.eof()) {
+		for (int i = 0; i < 4; i++)
+		{
+			getline(VTConfig, Line, ':'); // get values, one at a time, delimited by the : character
+			stringstream iss;
+			iss << Line; //Put the string into a stream
+			iss >> start[i]; //This outputs the data as an int.
+		}
+		for (int i = 0; i < 4; i++)
+		{
+			getline(VTConfig, Line, ':'); // get values, one at a time, delimited by the : character
+			stringstream iss;
+			iss << Line; //Put the string into a stream
+			iss >> tick[i]; //This outputs the data as an int.
+		}
+		for (int i = 0; i < 4; i++)
+		{
+			getline(VTConfig, Line, ':'); // get values, one at a time, delimited by the : character
+			stringstream iss;
+			iss << Line; //Put the string into a stream
+			iss >> max[i]; //This outputs the data as an int.
 		}
 	}
-	else {
-		// TODO: Output an error to the log file
-		return;
-	}
+	this->startTime.hour = start[0];
+	this->startTime.minute = start[1];
+	this->startTime.second = start[2];
+	this->startTime.msec = start[3];
+
+	this->tickPrecision.hour = tick[0];
+	this->tickPrecision.minute = tick[1];
+	this->tickPrecision.second = tick[2];
+	this->tickPrecision.msec = tick[3];
+
+	this->maxTime.hour = max[0];
+	this->maxTime.minute = max[1];
+	this->maxTime.second = max[2];
+	this->maxTime.msec = max[3];
+
 	VTConfig.close();
 	return;
 }
@@ -153,8 +165,15 @@ bool VTime::clockTick()
 		return true;
 	}
 	else {
+		globalThreadStop = false;
 		return false;
 	}
+
+	// This function should also increment the
+	// different time measures respectively in regards to
+	// the increment that just took place.
+	// Only do this if it is still less than the max time
+	// in order to save on processing.
 
 }
 VTDate getCurrentTime() {
@@ -167,19 +186,16 @@ VTDate getMaxTime() {
 	return myTime.maxTime;
 }
 int getPercentageComplete() {
-	double sumA, sumB;
+	int sumA, sumB;
 
 	// Convert all of the different time measurements to msec
 	// for both the current and max time in respect to the starting time
-	sumA = (myTime.currentTime.hour - myTime.startTime.hour) * 3600000;
-	sumA += (myTime.currentTime.minute - myTime.startTime.minute) * 60000;
-	sumA += (myTime.currentTime.second - myTime.startTime.second) * 1000;
-	sumA += (myTime.currentTime.msec = myTime.startTime.msec);
+	sumA = convertTimeToMSec(myTime.currentTime);
 
-	sumB = (myTime.maxTime.hour - myTime.startTime.hour) * 3600000;
-	sumB += (myTime.maxTime.minute - myTime.startTime.minute) * 60000;
-	sumB += (myTime.maxTime.second - myTime.startTime.second) * 1000;
-	sumB += (myTime.maxTime.msec - myTime.startTime.msec);
+	sumB = convertTimeToMSec(myTime.maxTime);
 
-	return (int)((sumA / sumB) * 100);
+	return (sumA / sumB) * 100;
+}
+int convertTimeToMSec(VTDate time) {
+	return (time.hour * 3600000) + (time.minute * 60000) + (time.second * 1000) + time.msec;
 }
